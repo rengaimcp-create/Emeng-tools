@@ -26,16 +26,18 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses
+      - name: Check Android SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          test -d "$ANDROID_HOME" || {
+            echo "::error::Android SDK tidak ditemukan"
+            exit 1
+          }
 
       - name: Check Gradle wrapper
         run: |
           if [ ! -f "./gradlew" ]; then
-            echo "::error::gradlew tidak ditemukan di root repository."
+            echo "::error::File gradlew tidak ditemukan di root repository"
             exit 1
           fi
           chmod +x ./gradlew
